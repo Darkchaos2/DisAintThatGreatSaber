@@ -75,3 +75,4 @@ typings/
 # FuseBox cache
 .fusebox/
 settings/botDetails.js
+settings/sensitiveData.ini

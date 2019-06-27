@@ -12,11 +12,12 @@ var download = require('download-file');
 var url = require('url');
 
 // INTERNAL
-const MessageConverter = require('./MessageConverter.js');
+const Song = require('./Song.js');
 
 // SETTINGS
 const botDetails = require('./settings/botDetails.js');
 let config;
+let sensitiveData;
 
 // DATA
 // Activity types: PLAYING, STREAMING, LISTENING, WATCHING
@@ -25,6 +26,7 @@ const activityType = ['playing', 'streaming', 'listening', 'watching'];
 // FUNCTIONS
 function LoadConfig() {
 	config = ini.parse(fs.readFileSync('./settings/config.ini', 'utf-8'));
+	sensitiveData = ini.parse(fs.readFileSync('./settings/sensitiveData.ini', 'utf-8'));
 }
 
 function GetConfig() {
@@ -38,39 +40,22 @@ function SaveConfig() {
 function download(url, dest, cb) {
 };
 
+// PROGRAM
 LoadConfig();
+const songJson = require(sensitiveData.aSongDir);
+
 const client = new Discord.Client();
-
-const song = require('-');
-
-let convert = new MessageConverter(song);
-console.log(convert.parse(18.5));
-
-let savedMsg = "hello";
-let time = 0;
+let song = new Song(songJson, 2);
 
 client.on('ready', () => {
 	// Set activity based on preferences
 	client.user.setActivity(config.Preferences.activity, { type: activityType[config.Preferences.activityType] });
 	console.log("Ready");
 
-	client.channels.get("576032970524065841").send("temp")
-	.then(msg => {
-		let delay = 1500;
-		setInterval(() => edit(msg, delay), delay);
-	})
-
-	// setInterval(console.log("Hello"), 3000);
+	song.Start(client.channels.get("576032970524065841"));
 
 	// GetSongDownloadURL("hello");
 });
-
-function edit(msg, delay) {
-	time += delay / 1000;
-	console.log(time);
-	console.log(convert.parse(time));
-	// msg.edit(convert.parse(time));
-}
 
 
 client.on('message', msg => {

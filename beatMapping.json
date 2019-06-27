@@ -1,0 +1,22 @@
+{
+	"0": {
+		"0": ":noteBD:",
+		"1": ":noteBDL:",
+		"2": ":noteBL:",
+		"3": ":noteBUL:",
+		"4": ":noteBU:",
+		"5": ":noteBUR:",
+		"6": ":noteBR:",
+		"7": ":noteBDR:"
+	},
+	"1": {
+		"0": ":noteRD:",
+		"1": ":noteRDL:",
+		"2": ":noteRL:",
+		"3": ":noteRUL:",
+		"4": ":noteRU:",
+		"5": ":noteRUR:",
+		"6": ":noteRR:",
+		"7": ":noteRDR:"
+	}
+}

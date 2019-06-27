@@ -1,4 +1,4 @@
-class MessageConverter {
+class MessageController {
 	constructor(json) {
 		this.json = json;
 
@@ -64,4 +64,4 @@ class MessageConverter {
 	}
 }
 
-module.exports = MessageConverter;
+module.exports = MessageController;
