@@ -59,9 +59,28 @@ client.on('ready', () => {
 
 
 client.on('message', msg => {
+	if(msg.author.bot)
+		return;
+
+	song.OnSwing(msg.content);
+
+
+
+
+
+
+
+
+
+
 
 	if(msg.content.startsWith('play')) {
 		msg.content = msg.content.slice(5);
+
+
+
+
+
 
 		// let url = config.BeatSaverAPI.searchURL + msg.content;
 		// console.log(url);

@@ -2,22 +2,27 @@
 	"_fps": 1,
 	"_notes": [
 		{
-			"text": ":noteRUR:",
+			"name": "noteRUR",
 			"_lineLayer": 0,
 			"_lineIndex": 1
 		},
 		{
-			"text": ":noteRUL:",
+			"name": "noteRUL",
 			"_lineLayer": 1,
 			"_lineIndex": 1
 		},
 		{
-			"text": ":noteRU:",
+			"name": "noteRU",
 			"_lineLayer": 1,
 			"_lineIndex": 2
 		},
 		{
-			"text": ":noteRR:",
+			"name": "noteRR",
+			"_lineLayer": 2,
+			"_lineIndex": 2
+		},
+		{
+			"name": "hi",
 			"_lineLayer": 2,
 			"_lineIndex": 2
 		}
