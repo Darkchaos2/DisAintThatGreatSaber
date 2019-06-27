@@ -5,7 +5,7 @@ class Song {
 		this.json = json;
 		this.fps = fps;
 
-		this.health = 50;
+		this.health = 0.5;
 		this.acceptableInputs = [];
 		this.time = -1;
 		this.hasSwung = true;
@@ -21,7 +21,7 @@ class Song {
 
 		template[this.json._notes[time]._lineLayer][this.json._notes[time]._lineIndex] = `:${this.json._notes[time].name}:`;
 
-		let output = `Energy: ${parseInt(this.health)}%`;
+		let output = `Energy: ${parseInt(this.health * 100)}%`;
 		for(let i = template.length - 1; i > -1; i--) {
 			output += '\n' + template[i].join('');
 		}
@@ -31,19 +31,16 @@ class Song {
 
 	OnSwing(swung) {
 		this.hasSwung = true;
-		console.log(swung);
-		console.log(this.json._notes[this.time].name);
 
 		if(swung == this.json._notes[this.time].name) {
 			console.log("success");
-			this.health += 1;
+			this.health += 0.01;
 		}
 		else {
-			console.log(`before ${this.health}`);
 			console.log("fail");
-			this.health -= 15;
-			console.log(`after ${this.health}`);
+			this.health -= 0.15;
 		}
+		console.log(this.health);
 	}
 
 	Start(channel) {
@@ -66,7 +63,7 @@ class Song {
 
 		// If user did not swing before the last frame ended, reduce health
 		if(!this.hasSwung) {
-			this.health -= 10;
+			this.health -= 0.1;
 
 			if(this.health <= 0) {
 				clearInterval(interval);
