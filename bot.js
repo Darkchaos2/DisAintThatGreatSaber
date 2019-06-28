@@ -55,7 +55,7 @@ client.on('ready', () => {
 	let convertedSong = utils.convertSong(songJson, 2);
 
 	let song = new Song(convertedSong, 5, sensitiveData.playerID);
-	song.Start(client.channels.get("593960413109157918"));
+	// song.Start(client.channels.get("593960413109157918"));
 
 	// GetSongDownloadURL("hello");
 });
@@ -65,9 +65,17 @@ client.on('message', msg => {
 	if(msg.author.bot)
 		return;
 
-	song.OnSwing(msg.content);
+	// song.OnSwing(msg.content);
 
 
+	if(msg.content.startsWith('test')) {
+		msg.channel.send("debugging");
+
+		let convertedSong = utils.convertSong(songJson, 2);
+
+		let song = new Song(convertedSong, 5, sensitiveData.playerID);
+		song.Start(client.channels.get("593960413109157918"));
+	}
 
 
 
