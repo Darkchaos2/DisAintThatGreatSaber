@@ -1,4 +1,4 @@
-const beatMapping = require('./beatMapping.json');
+const beatMapping = require('./data/beatMapping.json');
 
 class utils {
 	static emoteToBeat(name) {
@@ -62,41 +62,58 @@ class utils {
 		return cut;
 	}
 
-	static songConverter(song) {
-		newSong = {
-			"_fps": 1,
+	static convertSong(song, fps) {
+		let newSong = {
+			"_fps": fps,
 			"_notes": [
-				{
-					"name": "<:noteRUR:593969323803017226>",
-					"_lineLayer": 0,
-					"_lineIndex": 1
-				},
-				{
-					"name": "<:noteRUL:593969323887034368>",
-					"_lineLayer": 1,
-					"_lineIndex": 1
-				},
-				{
-					"name": "<:noteRU:593969323794497602>",
-					"_lineLayer": 1,
-					"_lineIndex": 2
-				},
-				{
-					"name": "<:noteRR:593969323530387471>",
-					"_lineLayer": 2,
-					"_lineIndex": 2
-				},
-				{
-					"name": "hi",
-					"_lineLayer": 2,
-					"_lineIndex": 2
-				}
 			]
 		};
 
+		let longestTime = this.roundToNearest(song._notes[song._notes.length - 1]._time, fps);
+		console.log(longestTime)
 
+		for(let beat of song._notes.values()) {
+			let currentTime = this.roundToNearest(beat._time, fps);
+
+			if(song._notes.some(futurebeat => futurebeat._time == currentTime))
+				continue;
+
+			beat._time = currentTime;
+		}
+
+		// song._notes.foreach(note => {
+		// 	note._time = this.roundToNearest(note._time, fps);
+		// });
+
+		for(let i = 0; i <= longestTime; i += fps) {
+			let tempBeat = song._notes.find(beat => beat._time == i);
+
+			if(!tempBeat)
+				continue;
+
+			console.log("adding " + i)
+			newSong._notes.push(this.beatToNewFormat(tempBeat));
+		}
 
 		return newSong;
+	}
+
+	static roundToNearest(numer, nearest) {
+		return Math.round(numer / nearest) * nearest;
+	}
+
+	static beatToNewFormat(beat) {
+		let newBeat = {
+			name: null,
+			_lineLayer: null,
+			_lineIndex: null
+		}
+
+		newBeat.name = beatMapping[beat._type][beat._cutDirection];
+		newBeat._lineLayer = beat._lineLayer;
+		newBeat._lineIndex = beat._lineIndex;
+
+		return newBeat;
 	}
 }
 

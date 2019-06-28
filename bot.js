@@ -13,6 +13,7 @@ var url = require('url');
 
 // INTERNAL
 const Song = require('./Song.js');
+const utils = require('./utils.js');
 
 // SETTINGS
 const botDetails = require('./settings/botDetails.js');
@@ -42,16 +43,18 @@ function download(url, dest, cb) {
 
 // PROGRAM
 LoadConfig();
-const songJson = require(sensitiveData.aSongDir);
+const songJson = require('./maps/actual map.json');
 
 const client = new Discord.Client();
-let song = new Song(songJson, 5, sensitiveData.playerID);
 
 client.on('ready', () => {
 	// Set activity based on preferences
 	client.user.setActivity(config.Preferences.activity, { type: activityType[config.Preferences.activityType] });
 	console.log("Ready");
 
+	let convertedSong = utils.convertSong(songJson, 2);
+
+	let song = new Song(convertedSong, 5, sensitiveData.playerID);
 	song.Start(client.channels.get("593960413109157918"));
 
 	// GetSongDownloadURL("hello");
