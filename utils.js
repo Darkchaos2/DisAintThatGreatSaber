@@ -61,6 +61,43 @@ class utils {
 
 		return cut;
 	}
+
+	static songConverter(song) {
+		newSong = {
+			"_fps": 1,
+			"_notes": [
+				{
+					"name": "<:noteRUR:593969323803017226>",
+					"_lineLayer": 0,
+					"_lineIndex": 1
+				},
+				{
+					"name": "<:noteRUL:593969323887034368>",
+					"_lineLayer": 1,
+					"_lineIndex": 1
+				},
+				{
+					"name": "<:noteRU:593969323794497602>",
+					"_lineLayer": 1,
+					"_lineIndex": 2
+				},
+				{
+					"name": "<:noteRR:593969323530387471>",
+					"_lineLayer": 2,
+					"_lineIndex": 2
+				},
+				{
+					"name": "hi",
+					"_lineLayer": 2,
+					"_lineIndex": 2
+				}
+			]
+		};
+
+
+
+		return newSong;
+	}
 }
 
 module.exports = utils;

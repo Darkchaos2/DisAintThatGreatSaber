@@ -45,7 +45,7 @@ LoadConfig();
 const songJson = require(sensitiveData.aSongDir);
 
 const client = new Discord.Client();
-let song = new Song(songJson, 2);
+let song = new Song(songJson, 5, sensitiveData.playerID);
 
 client.on('ready', () => {
 	// Set activity based on preferences

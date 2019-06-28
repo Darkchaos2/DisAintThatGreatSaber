@@ -1,9 +1,11 @@
 const utils = require('./utils.js');
+const Discord = require('discord.js');
 
 class Song {
-	constructor(json, fps) {
+	constructor(json, fps, playerID) {
 		this.json = json;
 		this.fps = fps;
+		this.playerID = playerID;
 
 		this.health = 0.5;
 		this.acceptableInputs = [];
@@ -30,7 +32,11 @@ class Song {
 	}
 
 	OnSwing(swung) {
-		this.hasSwung = true;
+		if(this.time < 0)
+			return;
+
+		if(this.hasSwung)
+			return;
 
 		if(swung == this.json._notes[this.time].name) {
 			console.log("success");
@@ -40,14 +46,39 @@ class Song {
 			console.log("fail");
 			this.health -= 0.15;
 		}
+
+		this.hasSwung = true;
 		console.log(this.health);
 	}
 
 	Start(channel) {
 		channel.send("Setting up...")
 		.then(msg => {
+			this.InitReactions(msg);
+
+			const filter = (reaction, user) => {
+				// return user.id == msg.author.id;
+				return user.id == this.playerID;
+			}
+
+			this.collector = msg.createReactionCollector(filter);
+
+			this.collector.on('collect', (reaction, reactionCollector) => {
+				console.log(reaction.emoji.toString());
+				this.OnSwing(reaction.emoji.toString());
+				reaction.remove(msg.guild.members.get(this.playerID));
+			})
+
+			this.collector.on('end', collected => {
+				console.log("emoji collector ended");
+			})
+
 			var interval = setInterval(() => this.nextFrame(msg, interval), this.fps * 1000);
 		})
+	}
+
+	InitReactions(msg) {
+		msg.react(msg.author.client.emojis.get("593969323803017226"));
 	}
 
 	nextFrame(msg, interval) {
@@ -57,6 +88,7 @@ class Song {
 		// If there are no more notes, stop
 		if(this.time > this.json._notes.length - 1) {
 			clearInterval(interval);
+			this.collector.stop();
 			msg.edit("Finished!");
 			return;
 		}
