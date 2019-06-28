@@ -13,13 +13,13 @@ class Song {
 
 	toDiscordMessage(time) {
 		let template = [
-			[':blank:', ':blank:', ':blank:', ':blank:'],
-			[':blank:', ':blank:', ':blank:', ':blank:'],
-			[':blank:', ':blank:', ':blank:', ':blank:']
+			['<:blank:593968418043068417>', '<:blank:593968418043068417>', '<:blank:593968418043068417>', '<:blank:593968418043068417>'],
+			['<:blank:593968418043068417>', '<:blank:593968418043068417>', '<:blank:593968418043068417>', '<:blank:593968418043068417>'],
+			['<:blank:593968418043068417>', '<:blank:593968418043068417>', '<:blank:593968418043068417>', '<:blank:593968418043068417>']
 		];
 
 
-		template[this.json._notes[time]._lineLayer][this.json._notes[time]._lineIndex] = `:${this.json._notes[time].name}:`;
+		template[this.json._notes[time]._lineLayer][this.json._notes[time]._lineIndex] = `${this.json._notes[time].name}`;
 
 		let output = `Energy: ${parseInt(this.health * 100)}%`;
 		for(let i = template.length - 1; i > -1; i--) {

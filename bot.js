@@ -52,7 +52,7 @@ client.on('ready', () => {
 	client.user.setActivity(config.Preferences.activity, { type: activityType[config.Preferences.activityType] });
 	console.log("Ready");
 
-	song.Start(client.channels.get("576032970524065841"));
+	song.Start(client.channels.get("593960413109157918"));
 
 	// GetSongDownloadURL("hello");
 });
