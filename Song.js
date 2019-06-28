@@ -100,10 +100,11 @@ class Song {
 		if(!this.hasSwung) {
 			this.health -= 0.1;
 
-			if(this.health <= 0) {
-				this.Stop("You Died!")
-				return;
-			}
+		}
+		
+		if(this.health <= 0) {
+			this.Stop("You Died!")
+			return;
 		}
 
 		// Log to console
