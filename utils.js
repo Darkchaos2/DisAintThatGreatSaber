@@ -62,10 +62,11 @@ class utils {
 		return cut;
 	}
 
-	static convertSong(song, fps) {
+	static convertSong(song, meta, fps) {
 		let newSong = {
-			"_fps": fps,
-			"_notes": [
+			_name: meta.songName,
+			_fps: fps,
+			_notes: [
 			]
 		};
 

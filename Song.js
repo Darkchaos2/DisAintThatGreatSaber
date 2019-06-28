@@ -2,10 +2,11 @@ const utils = require('./utils.js');
 const Discord = require('discord.js');
 
 class Song {
-	constructor(json, fps, playerID) {
+	constructor(json, fps, playerID, bot) {
 		this.json = json;
 		this.fps = fps;
 		this.playerID = playerID;
+		this.bot = bot;
 
 		this.health = 0.5;
 		this.acceptableInputs = [];
@@ -52,8 +53,12 @@ class Song {
 	}
 
 	Start(channel) {
+		console.log(this.json._name)
+		channel.guild.me.client.user.setActivity(this.json._name, { type: 'PLAYING' })
+	
 		channel.send("Setting up...")
 		.then(msg => {
+			this.msg = msg;
 			this.InitReactions(msg);
 
 			const filter = (reaction, user) => {
@@ -73,7 +78,7 @@ class Song {
 				console.log("emoji collector ended");
 			})
 
-			var interval = setInterval(() => this.nextFrame(msg, interval), this.fps * 1000);
+			this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.fps * 1000);
 		})
 	}
 
@@ -87,9 +92,7 @@ class Song {
 
 		// If there are no more notes, stop
 		if(this.time > this.json._notes.length - 1) {
-			clearInterval(interval);
-			this.collector.stop();
-			msg.edit("Finished!");
+			this.Stop()
 			return;
 		}
 
@@ -98,8 +101,7 @@ class Song {
 			this.health -= 0.1;
 
 			if(this.health <= 0) {
-				clearInterval(interval);
-				msg.edit("You died!");
+				this.Stop("You Died!")
 				return;
 			}
 		}
@@ -122,8 +124,15 @@ class Song {
 	Play() {
 	}
 
-	Stop() {
+	Stop(customMesage = "Finished!") {
+		this.collector.stop();
+		this.msg.guild.me.client.user.setActivity("Finished", { type: "PLAYING" });
+		clearInterval(this.interval);
 
+		this.msg.edit(customMesage);
+	}
+
+	OnFinish() {
 	}
 }
 

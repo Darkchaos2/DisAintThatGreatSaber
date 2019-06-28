@@ -43,19 +43,21 @@ function download(url, dest, cb) {
 
 // PROGRAM
 LoadConfig();
-const songJson = require('./maps/actual map.json');
+const songJson = require('./maps/actual map short.json');
+const testSongJson = require('./maps/testMap.json');
+const songMeta = require('./maps/info.json');
 
 const client = new Discord.Client();
 
 client.on('ready', () => {
 	// Set activity based on preferences
-	client.user.setActivity(config.Preferences.activity, { type: activityType[config.Preferences.activityType] });
+	ResetActivity();
 	console.log("Ready");
 
-	let convertedSong = utils.convertSong(songJson, 2);
+	let convertedSong = utils.convertSong(songJson, songMeta, 2);
 
-	let song = new Song(convertedSong, 5, sensitiveData.playerID);
-	// song.Start(client.channels.get("593960413109157918"));
+	let song = new Song(convertedSong, 5, sensitiveData.playerID, this);
+	song.Start(client.channels.get("593960413109157918"));
 
 	// GetSongDownloadURL("hello");
 });
@@ -71,9 +73,9 @@ client.on('message', msg => {
 	if(msg.content.startsWith('test')) {
 		msg.channel.send("debugging");
 
-		let convertedSong = utils.convertSong(songJson, 2);
+		let convertedSong = utils.convertSong(songJson, songMeta, 2);
 
-		let song = new Song(convertedSong, 5, sensitiveData.playerID);
+		let song = new Song(convertedSong, 5, sensitiveData.playerID, this);
 		song.Start(client.channels.get("593960413109157918"));
 	}
 
@@ -177,6 +179,10 @@ function OnDownloadComplete() {
 	// extracts everything
 	zip.extractAllTo('./extract', true);
 
+}
+
+function ResetActivity() {
+	client.user.setActivity(config.Preferences.activity, { type: activityType[config.Preferences.activityType] });
 }
 
 // login bot
