@@ -1,3 +1,9 @@
+# NOTICE
+Oh no, bit of an oopsie. The bot uses static references to emojis in my server. if you want to host your own bot, it will need to be a member of this server. durp :S
+
+i cant roll a patch out for a few days as this week is very busy for me. this is a really bad idea but here is an ivote to the server, feel free to add your bot to it to get the emojis.
+https://discord.gg/Pg3rYjF
+
 # DisAintThatGreatSaber
 On my endless quest to port Beat Saber to every incompatible device out there, Discord reached out to their community to find the best bot known to all guild members. This was a calling. It was meant to be. It was time for Beat Saber to come to Discord! 
 
