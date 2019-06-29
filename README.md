@@ -19,6 +19,7 @@ To that, I say:
 # Welcome to Beat Saber for Discord!
 
 ## Setup
+Add your bot's token in /settings/botDetails.js
 
 ### Usage:
 ```
