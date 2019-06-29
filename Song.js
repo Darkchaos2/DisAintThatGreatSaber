@@ -54,7 +54,7 @@ class Song {
 				console.log("emoji collector ended");
 			})
 
-			this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.json.fps * 1000);
+			this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.json._fps * 1000);
 		})
 	}
 

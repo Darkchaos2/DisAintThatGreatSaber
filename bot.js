@@ -18,36 +18,15 @@ const Music = require('./Music.js');
 
 // SETTINGS
 const botDetails = require('./settings/botDetails.js');
-let config;
-let sensitiveData;
+const config = ini.parse(fs.readFileSync('./settings/config.ini', 'utf-8'));
+const sensitiveData = ini.parse(fs.readFileSync('./settings/sensitiveData.ini', 'utf-8'));
 
-// DATA
-// Activity types: PLAYING, STREAMING, LISTENING, WATCHING
-const activityType = ['playing', 'streaming', 'listening', 'watching'];
-
-// FUNCTIONS
-function LoadConfig() {
-	config = ini.parse(fs.readFileSync('./settings/config.ini', 'utf-8'));
-	sensitiveData = ini.parse(fs.readFileSync('./settings/sensitiveData.ini', 'utf-8'));
-}
-
-function GetConfig() {
-	return config;
-}
-
-function SaveConfig() {
-	fs.writeFileSync('./settings/config.ini', ini.stringify(config));
-}
-
-function download(url, dest, cb) {
-};
+// TEST DATA
+const testSongJson = require('./maps/actual map short.json');
+const testConvertedSongJson = require('./maps/testMap.json');
+const testSongMeta = require('./maps/info.json');
 
 // PROGRAM
-LoadConfig();
-const songJson = require('./maps/actual map short.json');
-const testSongJson = require('./maps/testMap.json');
-const songMeta = require('./maps/info.json');
-
 const client = new Discord.Client();
 
 client.on('ready', () => {
@@ -55,14 +34,7 @@ client.on('ready', () => {
 	ResetActivity();
 	console.log("Ready");
 
-	Start(songJson, songMeta, client.channels.get("593960413109157918"), client.guilds.get("593957881938837515").members.get(sensitiveData.playerID))
-
-	// let convertedSong = utils.convertSong(songJson, songMeta, 2);
-
-	// let song = new Song(convertedSong, sensitiveData.playerID);
-	// song.Start(client.channels.get("593960413109157918"));
-
-	// GetSongDownloadURL("hello");
+	DownloadFromSongName("demon slayer");
 });
 
 
@@ -99,9 +71,7 @@ client.on('message', msg => {
 
 });
 
-function Start(songJson, songMeta, channel, member) {
-	channel.send("playing test song");
-
+function Start(songJson, channel, member) {
 	if(!member.voiceChannel) {
 		channel.send("Beat Saber isn't the same without audio! Please join a voice channel first");
 		return;
@@ -109,10 +79,8 @@ function Start(songJson, songMeta, channel, member) {
 
 	let voiceConnection = member.voiceChannel.join()
 	.then(vc => {
-		let convertedSong = utils.convertSong(songJson, songMeta, 2);
-
-		this.song = new Song(convertedSong, member.id);
-		this.music = new Music(__dirname + "\\maps\\" + convertedSong._oggDir, vc);
+		this.song = new Song(songJson, member.id);
+		this.music = new Music(__dirname + "\\maps\\" + songJson._oggDir, vc);
 
 		song.Start(channel);
 		music.Play();
@@ -123,11 +91,15 @@ function Start(songJson, songMeta, channel, member) {
 	})
 }
 
-function GetSongDownloadURL(songName) {
-	let url = config.BeatSaverAPI.domain + config.BeatSaverAPI.searchURL + songName;
+function GetDomainURL(partialDir) {
+	return config.BeatSaverAPI.domain + partialDir;
+}
+
+function DownloadFromSongName(songName) {
+	let url = GetDomainURL(config.BeatSaverAPI.searchURL + songName);
 	let json = {};
 
-	let request = http.get(url, function(res) {
+	let res = http.get(url, function(res) {
 	    let jsonString = '';
 
 	    res.on('data', function (chunk) {
@@ -136,12 +108,10 @@ function GetSongDownloadURL(songName) {
 
 	    res.on('end', function () {
 	    	json = JSON.parse(jsonString);
-
-	    	console.log(json.docs[0]);
 	    	let url = config.BeatSaverAPI.domain + json.docs[0].downloadURL
 
 			console.log(url);
-			DownloadSong(url);
+			DownloadFromSongURL(url);
 	    });
 	})
 	.on('error', function(err) { // Handle errors
@@ -150,28 +120,27 @@ function GetSongDownloadURL(songName) {
 	});
 }
 
-function DownloadSong(uri, cb) {
+function DownloadFromSongURL(url, cb) {
 	let dest = "./test.zip"
 
 	var file = fs.createWriteStream(dest);
 
+	file.on('finish', function() {
+		file.close(OnDownloadComplete());  // close() is async, call cb after close completes.
+	});
+
 	var request = http.get(url, function(res) {
 
 		if ( [301, 302].indexOf(res.statusCode) > -1 ) {
-			console.log(res.headers);
-			console.log(res.headers.location);
-		     DownloadSong(res.headers.location, cb); 
-		     return;
+		    DownloadFromSongURL(GetDomainURL(res.headers.location), cb); 
+		    return;
 		}
 
 		res.pipe(file);
-
-		file.on('finish', function() {
-			file.close(OnDownloadComplete());  // close() is async, call cb after close completes.
-		});
 	})
 	.on('error', function(err) { // Handle errors
-		fs.unlink(dest, console.log(err)); // Delete the file async. (But we don't check the result)
+		console.log(err);
+		fs.unlink(dest, () => console.log(err)); // Delete the file async. (But we don't check the result)
 		if (cb) cb(err.message);
 	});
 
@@ -192,17 +161,25 @@ function OnDownloadComplete() {
 	var zip = new AdmZip("./test.zip");
 	var zipEntries = zip.getEntries(); // an array of ZipEntry records
 
-	zipEntries.forEach(function(zipEntry) {
-	    console.log(zipEntry.toString()); // outputs zip entries information
-	});
+	// zipEntries.forEach(function(zipEntry) {
+	//     console.log(zipEntry.toString()); // outputs zip entries information
+	// });
 
-	// extracts everything
-	zip.extractAllTo('./extract', true);
+	zip.extractAllTo(__dirname + '/extract', true);
+
+	let songMeta = fs.readFileSync('./extract/info.dat', 'utf8');
+	songMeta = JSON.parse(songMeta);
+
+	let songJson = fs.readFileSync('./extract/' + songMeta._difficultyBeatmapSets[0]._difficultyBeatmaps[0]._beatmapFilename, 'utf8');
+	songJson = JSON.parse(songJson);
+
+	let convertedSong = utils.convertSong(songJson, songMeta, 2);
+	Start(convertedSong, client.channels.get("593960413109157918"), client.guilds.get("593957881938837515").members.get(sensitiveData.playerID));
 
 }
 
 function ResetActivity() {
-	client.user.setActivity(config.Preferences.activity, { type: activityType[config.Preferences.activityType] });
+	client.user.setActivity(config.Preferences.activity, { type: config.Preferences.activityType });
 }
 
 // login bot

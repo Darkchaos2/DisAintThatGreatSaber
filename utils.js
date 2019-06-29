@@ -62,10 +62,10 @@ class utils {
 		return cut;
 	}
 
-	static convertSong(song, meta, fps) {
+	static convertSong(song, meta, fps = 2) {
 		let newSong = {
 			_name: meta.songName,
-			_oggDir: meta.difficultyLevels[0].audioPath,
+			_oggDir: meta._songFilename,
 			_fps: fps,
 			_notes: [
 			]
