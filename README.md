@@ -26,8 +26,10 @@ node bot.js
 ```
 
 ### Commands:
+```
 play [song] - searches BeatSaver for a song and converts it into a discord readable format
 test - loads test data, bit boring tbh with you :P
+```
 
 ## How to "play":
 When a beat comes up, react with the corresponding beat.
