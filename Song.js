@@ -3,9 +3,10 @@ const Discord = require('discord.js');
 const Music = require('./Music.js');
 
 class Song {
-	constructor(json, playerID) {
+	constructor(json, playerID, music) {
 		this.json = json;
 		this.playerID = playerID;
+		this.music = music;
 
 		this.health = 0.5;
 		this.time = -1;
@@ -33,6 +34,8 @@ class Song {
 	Start(channel) {
 		console.log(this.json._name)
 		channel.guild.me.client.user.setActivity(this.json._name, { type: 'PLAYING' });
+
+		this.music.Play();
 	
 		channel.send("Setting up...")
 		.then(msg => {
@@ -105,6 +108,8 @@ class Song {
 		this.collector.stop();
 		this.msg.guild.me.client.user.setActivity("Finished", { type: "PLAYING" });
 		clearInterval(this.interval);
+
+		this.music.Stop();
 
 		this.msg.edit(customMesage);
 	}

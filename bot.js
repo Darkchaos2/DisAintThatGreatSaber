@@ -10,6 +10,7 @@ const ini = require('ini');
 const AdmZip = require('adm-zip');
 var download = require('download-file');
 var url = require('url');
+// var mixer = require('audio-mixer');
 
 // INTERNAL
 const Song = require('./Song.js');
@@ -34,6 +35,57 @@ client.on('ready', () => {
 	// Set activity based on preferences
 	ResetActivity();
 	console.log("Ready");
+
+
+	 
+	// // Creates a new audio mixer with the specified options
+	// let mixer = new AudioMixer.Mixer({
+	//     channels: 2,
+	//     bitDepth: 16,
+	//     sampleRate: 44100,
+	//     clearInterval: 250
+	// });
+	 
+	// // Creates an input that is attached to the mixer
+	// let input = mixer.input({
+	//     channels: 1,
+	//     volume: 75
+	// });
+	 
+	// // Creates a standalone input
+	// let standaloneInput = new AudioMixer.Input({
+	//     channels: 1,
+	//     bitDepth: 16,
+	//     sampleRate: 48000,
+	//     volume: 75
+	// });
+	 
+	// // Adds the standalone input to the mixer
+	// mixer.addInput(standaloneInput);
+	 
+	// // Pipes a readable stream into an input
+	// fs.readFileSync('./sfx/red.mp3').pipe(input);
+	// fs.readFileSync('./sfx/blue.mp3').pipe(standaloneInput);
+	 
+	// // Pipes the mixer output to an writable stream
+	// mixer.pipe(deviceOutputStream);
+
+	// client.channels.get("593957881938837520").join()
+	// .then(vc => {
+	// 	let dis = mixer.pipe(vc);
+
+
+
+	// 	dis.on('end', () => {
+	// 		console.log("dispatcher end")
+	// 	});
+
+	// 	dis.on('error', e => {
+	// 	  // Catch any errors that may arise
+	// 	  console.log(e);
+	// 	});
+	// })
+
 
 	// DownloadFromSongName("demon slayer");
 });
@@ -72,11 +124,10 @@ function Start(songJson, channel, member) {
 
 	let voiceConnection = member.voiceChannel.join()
 	.then(vc => {
-		this.song = new Song(songJson, member.id);
-		this.music = new Music(__dirname + "\\extract\\" + songJson._eggDir, vc);
+		let music = new Music(__dirname + "\\extract\\" + songJson._eggDir, vc);
 
+		this.song = new Song(songJson, member.id, music);
 		song.Start(channel);
-		music.Play();
 	})
 	.catch(err => {
 		console.log(err);
@@ -102,7 +153,7 @@ function DownloadFromSongName(songName) {
 	    res.on('end', function () {
 	    	json = JSON.parse(jsonString);
 	    	let url = GetDomainURL(json.docs[0].downloadURL);
-	    	savedMessage.edit(`Found: ${json.docs[0].name}\nBlame beatsaver if you dont like the result ;)`)
+	    	savedMessage.edit(savedMessage.content += `\nFound: ${json.docs[0].name}\nBlame beatsaver if you dont like the result ;)`)
 
 			console.log(url);
 			DownloadFromSongURL(url);
@@ -115,6 +166,8 @@ function DownloadFromSongName(songName) {
 }
 
 function DownloadFromSongURL(url, cb) {
+	savedMessage.edit(savedMessage.content += `\nDownloading...`)
+
 	let dest = "./test.zip"
 
 	var file = fs.createWriteStream(dest);
@@ -152,6 +205,7 @@ function DownloadFromSongURL(url, cb) {
 }
 
 function OnDownloadComplete() {
+	savedMessage.edit(savedMessage.content += `\nConverting...`)
 	var zip = new AdmZip("./test.zip");
 	var zipEntries = zip.getEntries(); // an array of ZipEntry records
 
