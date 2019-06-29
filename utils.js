@@ -65,6 +65,7 @@ class utils {
 	static convertSong(song, meta, fps) {
 		let newSong = {
 			_name: meta.songName,
+			_oggDir: meta.difficultyLevels[0].audioPath,
 			_fps: fps,
 			_notes: [
 			]

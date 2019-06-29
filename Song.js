@@ -1,15 +1,13 @@
 const utils = require('./utils.js');
 const Discord = require('discord.js');
+const Music = require('./Music.js');
 
 class Song {
-	constructor(json, fps, playerID, bot) {
+	constructor(json, playerID) {
 		this.json = json;
-		this.fps = fps;
 		this.playerID = playerID;
-		this.bot = bot;
 
 		this.health = 0.5;
-		this.acceptableInputs = [];
 		this.time = -1;
 		this.hasSwung = true;
 	}
@@ -32,29 +30,9 @@ class Song {
 		return output;
 	}
 
-	OnSwing(swung) {
-		if(this.time < 0)
-			return;
-
-		if(this.hasSwung)
-			return;
-
-		if(swung == this.json._notes[this.time].name) {
-			console.log("success");
-			this.health += 0.01;
-		}
-		else {
-			console.log("fail");
-			this.health -= 0.15;
-		}
-
-		this.hasSwung = true;
-		console.log(this.health);
-	}
-
 	Start(channel) {
 		console.log(this.json._name)
-		channel.guild.me.client.user.setActivity(this.json._name, { type: 'PLAYING' })
+		channel.guild.me.client.user.setActivity(this.json._name, { type: 'PLAYING' });
 	
 		channel.send("Setting up...")
 		.then(msg => {
@@ -67,18 +45,16 @@ class Song {
 			}
 
 			this.collector = msg.createReactionCollector(filter);
-
 			this.collector.on('collect', (reaction, reactionCollector) => {
 				console.log(reaction.emoji.toString());
 				this.OnSwing(reaction.emoji.toString());
 				reaction.remove(msg.guild.members.get(this.playerID));
 			})
-
 			this.collector.on('end', collected => {
 				console.log("emoji collector ended");
 			})
 
-			this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.fps * 1000);
+			this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.json.fps * 1000);
 		})
 	}
 
@@ -134,6 +110,26 @@ class Song {
 	}
 
 	OnFinish() {
+	}
+
+	OnSwing(swung) {
+		if(this.time < 0)
+			return;
+
+		if(this.hasSwung)
+			return;
+
+		if(swung == this.json._notes[this.time].name) {
+			console.log("success");
+			this.health += 0.01;
+		}
+		else {
+			console.log("fail");
+			this.health -= 0.15;
+		}
+
+		this.hasSwung = true;
+		console.log(this.health);
 	}
 }
 

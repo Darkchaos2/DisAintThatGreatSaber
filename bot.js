@@ -14,6 +14,7 @@ var url = require('url');
 // INTERNAL
 const Song = require('./Song.js');
 const utils = require('./utils.js');
+const Music = require('./Music.js');
 
 // SETTINGS
 const botDetails = require('./settings/botDetails.js');
@@ -54,10 +55,12 @@ client.on('ready', () => {
 	ResetActivity();
 	console.log("Ready");
 
-	let convertedSong = utils.convertSong(songJson, songMeta, 2);
+	Start(songJson, songMeta, client.channels.get("593960413109157918"), client.guilds.get("593957881938837515").members.get(sensitiveData.playerID))
 
-	let song = new Song(convertedSong, 5, sensitiveData.playerID, this);
-	song.Start(client.channels.get("593960413109157918"));
+	// let convertedSong = utils.convertSong(songJson, songMeta, 2);
+
+	// let song = new Song(convertedSong, sensitiveData.playerID);
+	// song.Start(client.channels.get("593960413109157918"));
 
 	// GetSongDownloadURL("hello");
 });
@@ -67,21 +70,14 @@ client.on('message', msg => {
 	if(msg.author.bot)
 		return;
 
+	if(!msg.guild) return;
+
 	// song.OnSwing(msg.content);
 
 
-	if(msg.content.startsWith('test')) {
-		msg.channel.send("debugging");
-
-		let convertedSong = utils.convertSong(songJson, songMeta, 2);
-
-		let song = new Song(convertedSong, 5, sensitiveData.playerID, this);
-		song.Start(client.channels.get("593960413109157918"));
+	if(msg.content.startsWith('play')) {
+		Start(songJson, songMeta, msg.channel, msg.member);	
 	}
-
-
-
-
 
 
 
@@ -102,6 +98,30 @@ client.on('message', msg => {
 	}
 
 });
+
+function Start(songJson, songMeta, channel, member) {
+	channel.send("playing test song");
+
+	if(!member.voiceChannel) {
+		channel.send("Beat Saber isn't the same without audio! Please join a voice channel first");
+		return;
+	}
+
+	let voiceConnection = member.voiceChannel.join()
+	.then(vc => {
+		let convertedSong = utils.convertSong(songJson, songMeta, 2);
+
+		this.song = new Song(convertedSong, member.id);
+		this.music = new Music(__dirname + "\\maps\\" + convertedSong._oggDir, vc);
+
+		song.Start(channel);
+		music.Play();
+	})
+	.catch(err => {
+		console.log(err);
+		channel.send("Cannot join your channel");
+	})
+}
 
 function GetSongDownloadURL(songName) {
 	let url = config.BeatSaverAPI.domain + config.BeatSaverAPI.searchURL + songName;
