@@ -23,5 +23,18 @@ To that, I say:
 node bot.js
 ```
 
-disclaimer:
-i havent finished this yet, check back in like 5 hours...
+## Commands:
+play [song] - searches BeatSaver for a song and converts it into a discord readable format
+test - loads test data, bit boring tbh with you :P
+
+## Wishlist
+As the time draws near (currently 4 hours away from deadline at 4am in the morning), it is becoming more apparent that i will not be able to add everything i wanted to. This joke project seems a bit lackluster without the memes and extra feature so wanted to mention the missing features regardless.
+
+Hounourable missing feature mentions:
+- Knucles / Tails shouting blue / red laser on blue / red lighting events
+- Knucles shouting oh no on beat miss
+- slash sfx on slash
+- settings menu to turn off shouting knucles
+- slash visual effects
+- growing beats from the distance
+- less shitty ui

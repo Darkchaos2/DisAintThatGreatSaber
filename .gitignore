@@ -76,3 +76,10 @@ typings/
 .fusebox/
 settings/botDetails.js
 settings/sensitiveData.ini
+.extract/
+*.jpg
+*.png
+*.egg
+*.zip
+*.dat
+*.dat

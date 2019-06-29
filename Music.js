@@ -15,8 +15,10 @@ class Music {
 			this.dispatcher.resume(); // Carry on playing
 			return;
 		}
+		console.log(this.songFile)
 
 		this.dispatcher = this.vc.playFile(this.songFile);
+		console.log(this.dispatcher)
 
 		this.dispatcher.on('end', () => {
 			console.log("dispatcher end")
@@ -29,7 +31,7 @@ class Music {
 
 		this.dispatcher.setVolume(0.5); // Set the volume to 50%
 
-		console.log(this.dispatcher.time); // The time in milliseconds that the stream this.dispatcher has been playing for
+		// console.log(this.dispatcher.time); // The time in milliseconds that the stream this.dispatcher has been playing for
 	}
 
 	Pause() {

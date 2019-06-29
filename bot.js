@@ -28,13 +28,14 @@ const testSongMeta = require('./maps/info.json');
 
 // PROGRAM
 const client = new Discord.Client();
+var savedMessage = null;
 
 client.on('ready', () => {
 	// Set activity based on preferences
 	ResetActivity();
 	console.log("Ready");
 
-	DownloadFromSongName("demon slayer");
+	// DownloadFromSongName("demon slayer");
 });
 
 
@@ -47,26 +48,18 @@ client.on('message', msg => {
 	// song.OnSwing(msg.content);
 
 
-	if(msg.content.startsWith('play')) {
-		Start(songJson, songMeta, msg.channel, msg.member);	
+	if(msg.content.startsWith('test')) {
+		let convertedSong = utils.convertSong(testSongJson, testSongMeta, 2);
+		Start(convertedSong, msg.channel, msg.member);	
 	}
 
-
-
-
-
-	if(msg.content.startsWith('play')) {
+	if(msg.content.startsWith('play ')) {
 		msg.content = msg.content.slice(5);
-
-
-
-
-
-
-		// let url = config.BeatSaverAPI.searchURL + msg.content;
-		// console.log(url);
-
-		// download(url, './', console.log('download'))
+		msg.channel.send("Searching...")
+		.then(botMsg => {
+			savedMessage = botMsg;
+			DownloadFromSongName(msg.content);
+		})
 	}
 
 });
@@ -80,7 +73,7 @@ function Start(songJson, channel, member) {
 	let voiceConnection = member.voiceChannel.join()
 	.then(vc => {
 		this.song = new Song(songJson, member.id);
-		this.music = new Music(__dirname + "\\maps\\" + songJson._oggDir, vc);
+		this.music = new Music(__dirname + "\\extract\\" + songJson._eggDir, vc);
 
 		song.Start(channel);
 		music.Play();
@@ -108,7 +101,8 @@ function DownloadFromSongName(songName) {
 
 	    res.on('end', function () {
 	    	json = JSON.parse(jsonString);
-	    	let url = config.BeatSaverAPI.domain + json.docs[0].downloadURL
+	    	let url = GetDomainURL(json.docs[0].downloadURL);
+	    	savedMessage.edit(`Found: ${json.docs[0].name}\nBlame beatsaver if you dont like the result ;)`)
 
 			console.log(url);
 			DownloadFromSongURL(url);

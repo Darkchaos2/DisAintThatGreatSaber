@@ -65,7 +65,7 @@ class utils {
 	static convertSong(song, meta, fps = 2) {
 		let newSong = {
 			_name: meta.songName,
-			_oggDir: meta._songFilename,
+			_eggDir: meta._songFilename,
 			_fps: fps,
 			_notes: [
 			]
@@ -111,7 +111,11 @@ class utils {
 			_lineIndex: null
 		}
 
-		newBeat.name = beatMapping[beat._type][beat._cutDirection];
+		if(!beatMapping[beat._type])
+			newBeat.name = ":blank:";
+		else
+			newBeat.name = beatMapping[beat._type][beat._cutDirection];
+		
 		newBeat._lineLayer = beat._lineLayer;
 		newBeat._lineIndex = beat._lineIndex;
 
