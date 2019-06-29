@@ -24,8 +24,10 @@ node bot.js
 ```
 
 ## Commands:
+```
 play [song] - searches BeatSaver for a song and converts it into a discord readable format
 test - loads test data, bit boring tbh with you :P
+```
 
 ## Wishlist
 As the time draws near (currently 4 hours away from deadline at 4am in the morning), it is becoming more apparent that i will not be able to add everything i wanted to. This joke project seems a bit lackluster without the memes and extra feature so wanted to mention the missing features regardless.
