@@ -29,7 +29,8 @@ const testSongMeta = require('./maps/info.json');
 
 // PROGRAM
 const client = new Discord.Client();
-var savedMessage = null;
+var userMessage = null;
+var botMessage = null;
 
 client.on('ready', () => {
 	// Set activity based on preferences
@@ -99,7 +100,6 @@ client.on('message', msg => {
 
 	// song.OnSwing(msg.content);
 
-
 	if(msg.content.startsWith('test')) {
 		let convertedSong = utils.convertSong(testSongJson, testSongMeta, 2);
 		Start(convertedSong, msg.channel, msg.member);	
@@ -107,9 +107,11 @@ client.on('message', msg => {
 
 	if(msg.content.startsWith('play ')) {
 		msg.content = msg.content.slice(5);
+
 		msg.channel.send("Searching...")
 		.then(botMsg => {
-			savedMessage = botMsg;
+			userMessage = msg;
+			botMessage = botMsg;
 			DownloadFromSongName(msg.content);
 		})
 	}
@@ -152,8 +154,14 @@ function DownloadFromSongName(songName) {
 
 	    res.on('end', function () {
 	    	json = JSON.parse(jsonString);
+
+	    	if(json.docs.length == 0) {
+	    		botMessage.edit("Cannot find a song")
+	    		return;
+	    	}
+
 	    	let url = GetDomainURL(json.docs[0].downloadURL);
-	    	savedMessage.edit(savedMessage.content += `\nFound: ${json.docs[0].name}\nBlame beatsaver if you dont like the result ;)`)
+	    	botMessage.edit(botMessage.content += `\nFound: ${json.docs[0].name}\nBlame beatsaver if you dont like the result ;)`)
 
 			console.log(url);
 			DownloadFromSongURL(url);
@@ -166,8 +174,8 @@ function DownloadFromSongName(songName) {
 }
 
 function DownloadFromSongURL(url, cb) {
-	savedMessage.edit(savedMessage.content += `\nDownloading...`)
-
+	botMessage.edit(botMessage.content += `\nDownloading...`)
+	
 	let dest = "./test.zip"
 
 	var file = fs.createWriteStream(dest);
@@ -205,7 +213,7 @@ function DownloadFromSongURL(url, cb) {
 }
 
 function OnDownloadComplete() {
-	savedMessage.edit(savedMessage.content += `\nConverting...`)
+	botMessage.edit(botMessage.content += `\nConverting...`)
 	var zip = new AdmZip("./test.zip");
 	var zipEntries = zip.getEntries(); // an array of ZipEntry records
 
@@ -222,7 +230,7 @@ function OnDownloadComplete() {
 	songJson = JSON.parse(songJson);
 
 	let convertedSong = utils.convertSong(songJson, songMeta, 2);
-	Start(convertedSong, client.channels.get("593960413109157918"), client.guilds.get("593957881938837515").members.get(sensitiveData.playerID));
+	Start(convertedSong, botMessage.channel, userMessage.member);
 
 }
 

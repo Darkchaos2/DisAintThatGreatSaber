@@ -40,7 +40,7 @@ class Song {
 		channel.send("Setting up...")
 		.then(msg => {
 			this.msg = msg;
-			this.InitReactions(msg);
+			let promises = this.InitReactions(msg);
 
 			const filter = (reaction, user) => {
 				// return user.id == msg.author.id;
@@ -57,12 +57,38 @@ class Song {
 				console.log("emoji collector ended");
 			})
 
-			this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.json._fps * 1000);
+			Promise.all(promises)
+			.then(() => {
+				this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.json._fps * 1000);
+			})
+
 		})
 	}
 
 	InitReactions(msg) {
-		msg.react(msg.author.client.emojis.get("593969323803017226"));
+		let promises = [];
+
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969324033835038"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323794628630"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969324125978632"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323869995039"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323882840074"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323492769803"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323840634901"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323760943116"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323895291916"))
+
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323564072961"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323807342592"))
+		// promises[promises.length] = msg.react(msg.author.client.emojis.get("445580723240435714"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323887034368"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323794497602"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323803017226"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323794759700"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323765137419"))
+		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323798822935"))
+
+		return promises;
 	}
 
 	nextFrame(msg, interval) {

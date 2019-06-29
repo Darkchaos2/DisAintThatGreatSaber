@@ -1,17 +1,17 @@
 {
   "_version": "2.0.0",
-  "_songName": "scary monsters and nice sprites",
+  "_songName": "BANG BANG BANG",
   "_songSubName": "",
-  "_songAuthorName": "[bad MIDI]",
-  "_levelAuthorName": "BananaBeet and youre mom",
-  "_beatsPerMinute": 140,
+  "_songAuthorName": "",
+  "_levelAuthorName": "BeatDaBeast",
+  "_beatsPerMinute": 135,
   "_songTimeOffset": 0,
   "_shuffle": 0,
   "_shufflePeriod": 0.5,
   "_previewStartTime": 12,
   "_previewDuration": 10,
-  "_songFilename": "[Vinesauce] Scary Monsters and Nice Sprites (MIDI Version).egg",
-  "_coverImageFilename": "thom.jpg",
+  "_songFilename": "song.egg",
+  "_coverImageFilename": "COVER.JPG",
   "_environmentName": "DefaultEnvironment",
   "_customData": {
     "_contributors": [],
@@ -23,10 +23,10 @@
       "_beatmapCharacteristicName": "Standard",
       "_difficultyBeatmaps": [
         {
-          "_difficulty": "Hard",
-          "_difficultyRank": 5,
-          "_beatmapFilename": "Hard.dat",
-          "_noteJumpMovementSpeed": 10,
+          "_difficulty": "Easy",
+          "_difficultyRank": 1,
+          "_beatmapFilename": "Easy.dat",
+          "_noteJumpMovementSpeed": 12,
           "_noteJumpStartBeatOffset": 0,
           "_customData": {
             "_difficultyLabel": "",
