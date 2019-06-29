@@ -1,6 +1,0 @@
-music
-sfx
-	laser
-	miss
-	hit
-hit visual
