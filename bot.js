@@ -31,6 +31,7 @@ const testSongMeta = require('./maps/info.json');
 const client = new Discord.Client();
 var userMessage = null;
 var botMessage = null;
+var song = null;
 
 client.on('ready', () => {
 	// Set activity based on preferences
@@ -102,7 +103,7 @@ client.on('message', msg => {
 
 	if(msg.content.startsWith('test')) {
 		let convertedSong = utils.convertSong(testSongJson, testSongMeta, 2);
-		Start(convertedSong, msg.channel, msg.member);	
+		Start(convertedSong, msg.channel, msg.member);
 	}
 
 	if(msg.content.startsWith('play ')) {
@@ -113,7 +114,15 @@ client.on('message', msg => {
 			userMessage = msg;
 			botMessage = botMsg;
 			DownloadFromSongName(msg.content);
-		})
+		});
+	}
+
+	if(song) {
+		console.log(song.hasEmojiAccess);
+		if(!song.hasEmojiAccess)
+			msg.delete()
+
+		song.OnMsgSwing(msg.content);
 	}
 
 });
@@ -128,7 +137,7 @@ function Start(songJson, channel, member) {
 	.then(vc => {
 		let music = new Music(__dirname + "\\extract\\" + songJson._eggDir, vc);
 
-		this.song = new Song(songJson, member.id, music);
+		song = new Song(songJson, member.id, music);
 		song.Start(channel);
 	})
 	.catch(err => {
@@ -175,7 +184,7 @@ function DownloadFromSongName(songName) {
 
 function DownloadFromSongURL(url, cb) {
 	botMessage.edit(botMessage.content += `\nDownloading...`)
-	
+
 	let dest = "./test.zip"
 
 	var file = fs.createWriteStream(dest);

@@ -11,6 +11,7 @@ class Song {
 		this.health = 0.5;
 		this.time = -1;
 		this.hasSwung = true;
+		this.hasEmojiAccess = true;
 	}
 
 	toDiscordMessage(time) {
@@ -35,7 +36,6 @@ class Song {
 		console.log(this.json._name)
 		channel.guild.me.client.user.setActivity(this.json._name, { type: 'PLAYING' });
 
-		this.music.Play();
 	
 		channel.send("Setting up...")
 		.then(msg => {
@@ -60,6 +60,7 @@ class Song {
 			Promise.all(promises)
 			.then(() => {
 				this.interval = setInterval(() => this.nextFrame(msg, this.interval), this.json._fps * 1000);
+				this.music.Play();
 			})
 
 		})
@@ -67,6 +68,12 @@ class Song {
 
 	InitReactions(msg) {
 		let promises = [];
+		if(!msg.author.client.guilds.get("593957881938837515")) {
+			msg.channel.send("Cannot access emojis. Please swing using messages");
+			this.hasEmojiAccess = false;
+			return promises;
+		}
+
 
 		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969324033835038"))
 		promises[promises.length] = msg.react(msg.author.client.emojis.get("593969323794628630"))
@@ -138,9 +145,74 @@ class Song {
 		this.music.Stop();
 
 		this.msg.edit(customMesage);
+		delete this;
 	}
 
 	OnFinish() {
+	}
+
+	OnMsgSwing(swing) {
+		let string = `<:note${swing}:`
+
+		switch(swing) {
+			case "BNC":
+				string += "593969323895291916";
+				break;
+			case "BU":
+				string += "593969323882840074";
+				break;
+			case "BUR":
+				string += "593969323492769803";
+				break;
+			case "BR":
+				string += "593969323840634901";
+				break;
+			case "BDR":
+				string += "593969323760943116";
+				break;
+			case "BD":
+				string += "593969324033835038";
+				break;
+			case "BDL":
+				string += "593969323794628630";
+				break;
+			case "BL":
+				string += "593969324125978632";
+				break;
+			case "BUL":
+				string += "593969323869995039";
+				break;
+			case "RNC":
+				string += "593969323798822935";
+				break;
+			case "RU":
+				string += "593969323794497602";
+				break;
+			case "RUR":
+				string += "593969323803017226";
+				break;
+			case "RR":
+				string += "593969323794759700";
+				break;
+			case "RDR":
+				string += "593969323765137419";
+				break;
+			case "RD":
+				string += "593969323564072961";
+				break;
+			case "RDL":
+				string += "593969323807342592";
+				break;
+			case "RL":
+				string += "445580723240435714";
+				break;
+			case "RUL":
+				string += "593969323887034368";
+				break;
+		}
+
+		string += ">";
+		this.OnSwing(string);
 	}
 
 	OnSwing(swung) {
@@ -150,7 +222,7 @@ class Song {
 		if(this.hasSwung)
 			return;
 
-		if(swung == this.json._notes[this.time].name) {
+		if(swung.toLowerCase() == this.json._notes[this.time].name.toLowerCase()) {
 			console.log("success");
 			this.health += 0.01;
 		}
